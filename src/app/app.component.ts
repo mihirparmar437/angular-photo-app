@@ -1,13 +1,29 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { PhotoService } from './services/photo.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
-  title = 'angular-photo-app';
+export class AppComponent implements OnInit {
+  photos: any[] = [];
+  isLoading: boolean = false;
+  error: any;
+
+  constructor(private photoService: PhotoService) {}
+
+  ngOnInit() {
+    this.isLoading = true;
+    this.photoService.getPhotos().subscribe(
+      (data) => {
+        this.photos = data;
+        this.isLoading = false;
+      },
+      (error) => {
+        this.error = error;
+        this.isLoading = false;
+      }
+    );
+  }
 }
